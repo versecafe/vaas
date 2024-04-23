@@ -35,7 +35,7 @@ import {
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
-import type { VaasFormats } from "@/lib/vaas/core";
+import { trackEvent } from "@/lib/events";
 
 const analyticsOptionsFormSchema = z.object({
   timeZone: z
@@ -92,6 +92,12 @@ export function AnalyticsOptionsForm({
   });
 
   function onSubmit(data: AnalyticsOptionsFormValues) {
+    trackEvent({
+      name: "get_analytics",
+      properties: {
+        format: data.format,
+      },
+    });
     onFormSubmit(data);
   }
 

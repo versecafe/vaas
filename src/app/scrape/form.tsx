@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ShinyButton } from "@/components/shiny-button";
+import { trackEvent } from "@/lib/events";
 
 const tokenFormSchema = z.object({
   token: z.string().length(24, {
@@ -36,6 +37,7 @@ export function TokenForm({
   });
 
   async function onSubmit(data: TokenFormValues) {
+    trackEvent({ name: "set_token" });
     onFormSubmit(data.token);
   }
 

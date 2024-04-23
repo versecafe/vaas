@@ -52,7 +52,10 @@ export default function ExportPage({
       {data?.json != undefined ? (
         <ScrollArea className="h-[600px] w-[400px] whitespace-nowrap rounded-md border border-gray-400 backdrop-blur-sm">
           <div className="p-2 absolute right-0">
-            <BlockCopyButton code={JSON.stringify(data.json, null, 2)} />
+            <BlockCopyButton
+              code={JSON.stringify(data.json, null, 2)}
+              event="copy_data_json"
+            />
           </div>
           <div className="flex text-gray-200 w-max space-x-4 p-4">
             <pre>{JSON.stringify(data.json, null, 2)}</pre>
@@ -62,7 +65,7 @@ export default function ExportPage({
       ) : data?.csv != undefined ? (
         <ScrollArea className="h-[600px] w-[400px] whitespace-nowrap rounded-md border border-gray-400 backdrop-blur-sm">
           <div className="p-2 absolute right-0">
-            <BlockCopyButton code={data.csv} />
+            <BlockCopyButton code={data.csv} event="copy_data_csv" />
           </div>
           <div className="flex text-gray-200 w-max space-x-4 p-4">
             <pre>{data.csv}</pre>
@@ -72,7 +75,7 @@ export default function ExportPage({
       ) : data?.yaml != undefined ? (
         <ScrollArea className="h-[600px] w-[400px] whitespace-nowrap rounded-md border border-gray-400 backdrop-blur-sm">
           <div className="p-2 absolute right-0">
-            <BlockCopyButton code={data.yaml} />
+            <BlockCopyButton code={data.yaml} event="copy_data_yaml" />
           </div>
           <div className="flex text-gray-200 w-max space-x-4 p-4">
             <pre>{data.yaml}</pre>
@@ -82,7 +85,7 @@ export default function ExportPage({
       ) : data?.xml != undefined ? (
         <ScrollArea className="h-[600px] w-[400px] whitespace-nowrap rounded-md border border-gray-400 backdrop-blur-sm">
           <div className="p-2 absolute right-0">
-            <BlockCopyButton code={data.xml} />
+            <BlockCopyButton code={data.xml} event="copy_data_xml" />
           </div>
           <div className="flex text-gray-200 w-max space-x-4 p-4">
             <pre>{data.xml}</pre>
@@ -92,7 +95,7 @@ export default function ExportPage({
       ) : data?.toml != undefined ? (
         <ScrollArea className="h-[600px] w-[400px] whitespace-nowrap rounded-md border border-gray-400 backdrop-blur-sm">
           <div className="p-2 absolute right-0">
-            <BlockCopyButton code={data.toml} />
+            <BlockCopyButton code={data.toml} event="copy_data_toml" />
           </div>
           <div className="flex text-gray-200 w-max space-x-4 p-4">
             <pre>{data.toml}</pre>

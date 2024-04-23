@@ -9,11 +9,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Event, trackEvent } from "@/lib/events";
 
 export function BlockCopyButton({
   code,
+  event,
   ...props
 }: {
+  event: Event["name"];
   code: string;
 } & ButtonProps) {
   const [hasCopied, setHasCopied] = React.useState(false);
@@ -33,6 +36,9 @@ export function BlockCopyButton({
           className="h-7 w-7 rounded-[6px] [&_svg]:size-3.5"
           onClick={() => {
             navigator.clipboard.writeText(code);
+            trackEvent({
+              name: event,
+            });
             setHasCopied(true);
           }}
           {...props}
