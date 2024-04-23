@@ -7,6 +7,7 @@ export async function vaas({
   to,
   tz,
   filter,
+  format,
 }: {
   token: string;
   teamId: string;
@@ -16,8 +17,13 @@ export async function vaas({
   to: Date;
   tz: string;
   filter: any;
+  format: "json" | "csv" | "yaml";
 }): Promise<{
-  ok?: { key: string; views: number; visitors: number }[];
+  ok?: {
+    json?: { key: string; total: number; devices: number }[];
+    csv?: string;
+    yaml?: string;
+  };
   error?: string;
 }> {
   if (!teamId.startsWith("team_")) {
@@ -43,15 +49,27 @@ export async function vaas({
     },
   });
 
-  const data: { data: { key: string; total: number; devices: number }[] } =
+  const raw: { data: { key: string; total: number; devices: number }[] } =
     await response.json();
 
-  const processedJson: { key: string; views: number; visitors: number }[] =
-    data.data.map(({ key, total, devices }) => ({
-      key,
-      views: total,
-      visitors: devices,
-    }));
+  switch (format) {
+    case "json":
+      return { ok: { json: raw.data } };
+    case "csv":
+      const csv: string = raw.data
+        .map((d) => `${d.key},${d.total},${d.devices}`)
+        .join("\n");
+      console.log("csv", csv);
+      return { ok: { csv } };
+    case "yaml":
+      const yaml: string = raw.data
+        .map(
+          (d) =>
+            `  - key: ${d.key}\n    total: ${d.total}\n    devices: ${d.devices}`,
+        )
+        .join("\n");
+      return { ok: { yaml: `data:\n${yaml}` } };
+  }
 
-  return { ok: processedJson };
+  return { error: "Invalid format. It must be 'json', 'csv', or 'yaml'." };
 }

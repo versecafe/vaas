@@ -54,6 +54,7 @@ const analyticsOptionsFormSchema = z.object({
     }),
   }),
   environment: z.enum(["production", "preview", "all"]),
+  format: z.enum(["json", "csv", "yaml"]),
   filters: z.string().max(1024).min(2),
 });
 
@@ -69,6 +70,7 @@ const defaultValues: Partial<AnalyticsOptionsFormValues> = {
     to: new Date(),
   },
   environment: "production",
+  format: "json",
   filters: "{}",
 };
 
@@ -180,6 +182,28 @@ export function AnalyticsOptionsForm({
                   <SelectItem value="production">Production</SelectItem>
                   <SelectItem value="preview">Preview</SelectItem>
                   <SelectItem value="all">All Environments</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="format"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Data Format</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a environment" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="json">JSON</SelectItem>
+                  <SelectItem value="csv">CSV</SelectItem>
+                  <SelectItem value="yaml">YAML</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

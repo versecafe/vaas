@@ -7,6 +7,7 @@ export async function callVaas({
   teamId,
   projectId,
   env,
+  format,
   from,
   to,
   tz,
@@ -16,6 +17,7 @@ export async function callVaas({
   teamId: string;
   projectId: string;
   env: "production" | "preview" | "all";
+  format: "json" | "csv" | "yaml";
   from: Date;
   to: Date;
   tz: string;
@@ -26,6 +28,7 @@ export async function callVaas({
     teamId,
     projectId,
     env,
+    format,
     from,
     to,
     tz,
