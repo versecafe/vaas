@@ -21,6 +21,8 @@ export default function ExportPage({
     json?: { key: string; total: number; devices: number }[];
     csv?: string;
     yaml?: string;
+    xml?: string;
+    toml?: string;
   }>();
 
   useEffect(() => {
@@ -74,6 +76,26 @@ export default function ExportPage({
           </div>
           <div className="flex text-gray-200 w-max space-x-4 p-4">
             <pre>{data.yaml}</pre>
+          </div>
+          <ScrollBar orientation="vertical" />
+        </ScrollArea>
+      ) : data?.xml != undefined ? (
+        <ScrollArea className="h-[600px] w-[400px] whitespace-nowrap rounded-md border border-gray-400 backdrop-blur-sm">
+          <div className="p-2 absolute right-0">
+            <BlockCopyButton code={data.xml} />
+          </div>
+          <div className="flex text-gray-200 w-max space-x-4 p-4">
+            <pre>{data.xml}</pre>
+          </div>
+          <ScrollBar orientation="vertical" />
+        </ScrollArea>
+      ) : data?.toml != undefined ? (
+        <ScrollArea className="h-[600px] w-[400px] whitespace-nowrap rounded-md border border-gray-400 backdrop-blur-sm">
+          <div className="p-2 absolute right-0">
+            <BlockCopyButton code={data.toml} />
+          </div>
+          <div className="flex text-gray-200 w-max space-x-4 p-4">
+            <pre>{data.toml}</pre>
           </div>
           <ScrollBar orientation="vertical" />
         </ScrollArea>

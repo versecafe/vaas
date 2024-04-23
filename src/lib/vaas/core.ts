@@ -1,3 +1,5 @@
+export type VaasFormats = "json" | "csv" | "yaml" | "xml" | "toml";
+
 export async function vaas({
   token,
   teamId,
@@ -17,12 +19,14 @@ export async function vaas({
   to: Date;
   tz: string;
   filter: any;
-  format: "json" | "csv" | "yaml";
+  format: VaasFormats;
 }): Promise<{
   ok?: {
     json?: { key: string; total: number; devices: number }[];
     csv?: string;
     yaml?: string;
+    xml?: string;
+    toml?: string;
   };
   error?: string;
 }> {
@@ -56,10 +60,9 @@ export async function vaas({
     case "json":
       return { ok: { json: raw.data } };
     case "csv":
-      const csv: string = raw.data
-        .map((d) => `${d.key},${d.total},${d.devices}`)
-        .join("\n");
-      console.log("csv", csv);
+      const csv: string =
+        "key,total,devices\n" +
+        raw.data.map((d) => `${d.key},${d.total},${d.devices}`).join("\n");
       return { ok: { csv } };
     case "yaml":
       const yaml: string = raw.data
@@ -68,8 +71,26 @@ export async function vaas({
             `  - key: ${d.key}\n    total: ${d.total}\n    devices: ${d.devices}`,
         )
         .join("\n");
-      return { ok: { yaml: `data:\n${yaml}` } };
+      return { ok: { yaml: `dataset:\n${yaml}` } };
+    case "xml":
+      const xml: string = `<?xml version="1.0" encoding="UTF-8"?>\n<dataset>${raw.data
+        .map(
+          (d) =>
+            `\n  <data>\n    <key>${d.key}</key>\n    <total>${d.total}</total>\n    <devices>${d.devices}</devices>\n  </data>`,
+        )
+        .join("")}\n</dataset>`;
+      return { ok: { xml } };
+    case "toml":
+      const toml: string = `[[data]]\n${raw.data
+        .map(
+          (d) =>
+            `  key = "${d.key}"\n  total = ${d.total}\n  devices = ${d.devices}`,
+        )
+        .join("\n\n[[data]]\n")}`;
+      return { ok: { toml } };
   }
 
-  return { error: "Invalid format. It must be 'json', 'csv', or 'yaml'." };
+  return {
+    error: "Invalid format. It must be 'json', 'csv', 'yaml', 'xml', or 'toml'",
+  };
 }

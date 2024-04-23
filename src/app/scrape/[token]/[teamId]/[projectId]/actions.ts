@@ -1,6 +1,6 @@
 "use server";
 
-import { vaas } from "@/lib/vaas/core";
+import { VaasFormats, vaas } from "@/lib/vaas/core";
 
 export async function callVaas({
   token,
@@ -17,7 +17,7 @@ export async function callVaas({
   teamId: string;
   projectId: string;
   env: "production" | "preview" | "all";
-  format: "json" | "csv" | "yaml";
+  format: VaasFormats;
   from: Date;
   to: Date;
   tz: string;

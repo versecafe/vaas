@@ -13,6 +13,8 @@ Retrieving your Vercel Analytics data for external use has never been easier.
 <th>JSON</th>
 <th>CSV</th>
 <th>YAML</th>
+<th>XML</th>
+<th>TOML</th>
 </tr>
 <tr>
 <td>
@@ -52,7 +54,7 @@ key,total,devices
 <td>
 
 ```yaml
-data:
+dataset:
   - key: 2024-03-24
     total: 32
     devices: 24
@@ -62,6 +64,50 @@ data:
   - key: 2024-03-26
     total: 569
     devices: 216
+```
+
+</td>
+<td>
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+  <data>
+    <key>2024-03-24</key>
+    <total>32</total>
+    <devices>24</devices>
+  </data>
+  <data>
+    <key>2024-03-25</key>
+    <total>183</total>
+    <devices>72</devices>
+  </data>
+  <data>
+    <key>2024-03-26</key>
+    <total>569</total>
+    <devices>216</devices>
+  </data>
+</dataset>
+```
+
+</td>
+<td>
+
+```toml
+[[data]]
+key = "2024-03-24"
+total = 32
+devices = 24
+
+[[data]]
+key = "2024-03-25"
+total = 183
+devices = 72
+
+[[data]]
+key = "2024-03-26"
+total = 569
+devices = 216
 ```
 
 </td>

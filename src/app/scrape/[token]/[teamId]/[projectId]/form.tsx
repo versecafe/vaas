@@ -35,6 +35,7 @@ import {
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
+import type { VaasFormats } from "@/lib/vaas/core";
 
 const analyticsOptionsFormSchema = z.object({
   timeZone: z
@@ -54,7 +55,7 @@ const analyticsOptionsFormSchema = z.object({
     }),
   }),
   environment: z.enum(["production", "preview", "all"]),
-  format: z.enum(["json", "csv", "yaml"]),
+  format: z.enum(["json", "csv", "xml", "yaml", "toml"]),
   filters: z.string().max(1024).min(2),
 });
 
@@ -204,6 +205,8 @@ export function AnalyticsOptionsForm({
                   <SelectItem value="json">JSON</SelectItem>
                   <SelectItem value="csv">CSV</SelectItem>
                   <SelectItem value="yaml">YAML</SelectItem>
+                  <SelectItem value="xml">XML</SelectItem>
+                  <SelectItem value="toml">TOML</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
