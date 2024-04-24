@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Team, getVercelConfig } from "@/lib/vaas/vercel";
 import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
+import { Cross2Icon } from "@radix-ui/react-icons";
 
 const loadingStates = [
   {
@@ -101,7 +102,7 @@ export default function ScrapePage(): JSX.Element {
           className="fixed top-4 right-4 text-white z-[120]"
           onClick={() => setLoading(false)}
         >
-          X
+          <Cross2Icon className="h-4 w-4" />
         </button>
       )}
     </>

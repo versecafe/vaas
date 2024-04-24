@@ -12,6 +12,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "VAAS",
   description: "The Vercel Analytics API Scraper",
+  metadataBase: new URL("https://vaas-brown.vercel.app"),
   openGraph: {
     type: "website",
     url: "https://vaas-brown.vercel.app",
