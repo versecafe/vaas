@@ -33,18 +33,18 @@ export default function ScrapePage(): JSX.Element {
       setLoading(true);
       (async () => {
         try {
-          const { ok, error } = await getVercelConfig(token);
-          if (error) {
+          const result = await getVercelConfig(token);
+          if (!result.ok) {
             setLoading(false);
             toast({
               title: "Error",
-              description: error,
+              description: result.error,
               duration: 5000,
             });
           }
           await new Promise((resolve) => setTimeout(resolve, 1300));
-          if (ok) {
-            setTeams(ok);
+          if (result.ok) {
+            setTeams(result.value);
           }
           await new Promise((resolve) => setTimeout(resolve, 100));
         } finally {

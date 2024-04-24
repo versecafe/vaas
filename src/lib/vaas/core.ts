@@ -1,3 +1,5 @@
+import type { Result } from "@/lib/utils";
+
 export type VaasFormats = "json" | "csv" | "yaml" | "xml" | "toml";
 
 export async function vaas({
@@ -20,21 +22,23 @@ export async function vaas({
   tz: string;
   filter: any;
   format: VaasFormats;
-}): Promise<{
-  ok?: {
+}): Promise<
+  Result<{
     json?: { key: string; total: number; devices: number }[];
     csv?: string;
     yaml?: string;
     xml?: string;
     toml?: string;
-  };
-  error?: string;
-}> {
+  }>
+> {
   if (!teamId.startsWith("team_")) {
-    return { error: "Invalid teamId. It must start with 'team_'." };
+    return { ok: false, error: "Invalid teamId. It must start with 'team_'." };
   }
   if (!projectId.startsWith("prj_")) {
-    return { error: "Invalid projectId. It must start with 'prj_'." };
+    return {
+      ok: false,
+      error: "Invalid projectId. It must start with 'prj_'.",
+    };
   }
 
   const url: string =
@@ -55,6 +59,7 @@ export async function vaas({
 
   if (response.status === 500) {
     return {
+      ok: false,
       error:
         "Unkown Vercel server error occurred. This can occur if you have an invalid Time Zone",
     };
@@ -62,7 +67,7 @@ export async function vaas({
 
   const jsonResponse = await response.json();
   if (jsonResponse.error) {
-    return { error: jsonResponse.error.message };
+    return { ok: false, error: jsonResponse.error.message };
   }
 
   // JSON response is shaped this way if successful, check for errors is done above
@@ -71,12 +76,12 @@ export async function vaas({
 
   switch (format) {
     case "json":
-      return { ok: { json: raw.data } };
+      return { ok: true, value: { json: raw.data } };
     case "csv":
       const csv: string =
         "key,total,devices\n" +
         raw.data.map((d) => `${d.key},${d.total},${d.devices}`).join("\n");
-      return { ok: { csv } };
+      return { ok: true, value: { csv } };
     case "yaml":
       const yaml: string = raw.data
         .map(
@@ -84,7 +89,7 @@ export async function vaas({
             `  - key: ${d.key}\n    total: ${d.total}\n    devices: ${d.devices}`,
         )
         .join("\n");
-      return { ok: { yaml: `dataset:\n${yaml}` } };
+      return { ok: true, value: { yaml: `dataset:\n${yaml}` } };
     case "xml":
       const xml: string = `<?xml version="1.0" encoding="UTF-8"?>\n<dataset>${raw.data
         .map(
@@ -92,7 +97,7 @@ export async function vaas({
             `\n  <data>\n    <key>${d.key}</key>\n    <total>${d.total}</total>\n    <devices>${d.devices}</devices>\n  </data>`,
         )
         .join("")}\n</dataset>`;
-      return { ok: { xml } };
+      return { ok: true, value: { xml } };
     case "toml":
       const toml: string = `[[data]]\n${raw.data
         .map(
@@ -100,11 +105,12 @@ export async function vaas({
             `  key = "${d.key}"\n  total = ${d.total}\n  devices = ${d.devices}`,
         )
         .join("\n\n[[data]]\n")}`;
-      return { ok: { toml } };
+      return { ok: true, value: { toml } };
   }
 
   // This should never happen but Types are in build step only, this gives runtime safety and a message to the UI
   return {
+    ok: false,
     error: `Invalid format. Must be JSON, CSV, YAML, XML, or TOML but received ${(format as String).toUpperCase()}.`,
   };
 }
