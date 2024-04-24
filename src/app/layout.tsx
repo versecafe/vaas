@@ -12,6 +12,20 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "VAAS",
   description: "The Vercel Analytics API Scraper",
+  openGraph: {
+    type: "website",
+    url: "https://vaas-brown.vercel.app",
+    title: "VAAS",
+    description: "The Vercel Analytics API Scraper",
+    images: [
+      {
+        url: "https://vaas-brown.vercel.app/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "VAAS",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
