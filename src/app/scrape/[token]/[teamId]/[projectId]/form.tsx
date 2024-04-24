@@ -35,7 +35,7 @@ import {
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
-import { trackEvent } from "@/lib/events";
+import { trackEvent } from "@/lib/analytics";
 
 const analyticsOptionsFormSchema = z.object({
   timeZone: z

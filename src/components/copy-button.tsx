@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Event, trackEvent } from "@/lib/events";
+import { Event, trackEvent } from "@/lib/analytics";
 
 export function BlockCopyButton({
   code,

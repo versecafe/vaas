@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ShinyButton } from "@/components/shiny-button";
-import { trackEvent } from "@/lib/events";
+import { trackEvent } from "@/lib/analytics";
 
 const tokenFormSchema = z.object({
   token: z.string().length(24, {
