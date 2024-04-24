@@ -33,6 +33,9 @@ export function TokenForm({
 }) {
   const form = useForm<TokenFormValues>({
     resolver: zodResolver(tokenFormSchema),
+    defaultValues: {
+      token: "",
+    },
     mode: "onChange",
   });
 
@@ -51,7 +54,7 @@ export function TokenForm({
             <FormItem>
               <FormLabel>Token</FormLabel>
               <FormControl>
-                <Input placeholder="token here" {...field} defaultValue={""} />
+                <Input placeholder="token here" {...field} />
               </FormControl>
               <FormDescription>
                 This is your Vercel Token for accessing the Vercel API. You can

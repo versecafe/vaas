@@ -1,18 +1,7 @@
 import type { Result } from "@/lib/utils";
 
 export type VaasFormats = "json" | "csv" | "yaml" | "xml" | "toml";
-
-export async function vaas({
-  token,
-  teamId,
-  projectId,
-  env,
-  from,
-  to,
-  tz,
-  filter,
-  format,
-}: {
+export type VaasRequest = {
   token: string;
   teamId: string;
   projectId: string;
@@ -22,38 +11,47 @@ export async function vaas({
   tz: string;
   filter: any;
   format: VaasFormats;
-}): Promise<
-  Result<{
-    json?: { key: string; total: number; devices: number }[];
-    csv?: string;
-    yaml?: string;
-    xml?: string;
-    toml?: string;
-  }>
-> {
-  if (!teamId.startsWith("team_")) {
+};
+
+export function vaasRequestValidator(
+  request: VaasRequest,
+): Result<VaasRequest> {
+  if (!request.teamId.startsWith("team_")) {
     return { ok: false, error: "Invalid teamId. It must start with 'team_'." };
   }
-  if (!projectId.startsWith("prj_")) {
+  if (!request.projectId.startsWith("prj_")) {
     return {
       ok: false,
       error: "Invalid projectId. It must start with 'prj_'.",
     };
   }
+  return { ok: true, value: request };
+}
+
+export async function vaas(request: VaasRequest): Promise<
+  Result<{
+    data: string;
+    type: VaasFormats;
+  }>
+> {
+  const validRequest = vaasRequestValidator(request);
+  if (!validRequest.ok) {
+    return { ok: false, error: validRequest.error };
+  }
 
   const url: string =
     `https://vercel.com/api/web-analytics/timeseries` +
-    `?teamId=${teamId}` +
-    `&projectId=${projectId}` +
-    (env === "all" ? "" : `&environment=${env}`) +
-    `&filter=${encodeURI(filter)}` +
-    `&from=${from.toISOString()}` +
-    `&to=${to.toISOString()}` +
-    `&tz=${tz.replace(/\//g, "%2F")}`;
+    `?teamId=${request.teamId}` +
+    `&projectId=${request.projectId}` +
+    (request.env === "all" ? "" : `&environment=${request.env}`) +
+    `&filter=${encodeURI(request.filter)}` +
+    `&from=${request.from.toISOString()}` +
+    `&to=${request.to.toISOString()}` +
+    `&tz=${request.tz.replace(/\//g, "%2F")}`;
 
   const response: Response = await fetch(url, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${request.token}`,
     },
   });
 
@@ -74,14 +72,17 @@ export async function vaas({
   const raw: { data: { key: string; total: number; devices: number }[] } =
     jsonResponse;
 
-  switch (format) {
+  switch (request.format) {
     case "json":
-      return { ok: true, value: { json: raw.data } };
+      return {
+        ok: true,
+        value: { data: JSON.stringify(raw.data, null, 2), type: "json" },
+      };
     case "csv":
       const csv: string =
         "key,total,devices\n" +
         raw.data.map((d) => `${d.key},${d.total},${d.devices}`).join("\n");
-      return { ok: true, value: { csv } };
+      return { ok: true, value: { data: csv, type: "csv" } };
     case "yaml":
       const yaml: string = raw.data
         .map(
@@ -89,7 +90,7 @@ export async function vaas({
             `  - key: ${d.key}\n    total: ${d.total}\n    devices: ${d.devices}`,
         )
         .join("\n");
-      return { ok: true, value: { yaml: `dataset:\n${yaml}` } };
+      return { ok: true, value: { data: `dataset:\n${yaml}`, type: "yaml" } };
     case "xml":
       const xml: string = `<?xml version="1.0" encoding="UTF-8"?>\n<dataset>${raw.data
         .map(
@@ -97,7 +98,7 @@ export async function vaas({
             `\n  <data>\n    <key>${d.key}</key>\n    <total>${d.total}</total>\n    <devices>${d.devices}</devices>\n  </data>`,
         )
         .join("")}\n</dataset>`;
-      return { ok: true, value: { xml } };
+      return { ok: true, value: { data: xml, type: "xml" } };
     case "toml":
       const toml: string = `[[data]]\n${raw.data
         .map(
@@ -105,12 +106,12 @@ export async function vaas({
             `  key = "${d.key}"\n  total = ${d.total}\n  devices = ${d.devices}`,
         )
         .join("\n\n[[data]]\n")}`;
-      return { ok: true, value: { toml } };
+      return { ok: true, value: { data: toml, type: "toml" } };
   }
 
   // This should never happen but Types are in build step only, this gives runtime safety and a message to the UI
   return {
     ok: false,
-    error: `Invalid format. Must be JSON, CSV, YAML, XML, or TOML but received ${(format as String).toUpperCase()}.`,
+    error: `Invalid format. Must be JSON, CSV, YAML, XML, or TOML but received ${(request.format as String).toUpperCase()}.`,
   };
 }

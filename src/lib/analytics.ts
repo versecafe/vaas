@@ -27,16 +27,17 @@ export function trackEvent(input: Event): void {
 
 /** Remove sensitive data from URLs used in analytics & speed insights */
 export function cleanSensitiveData(url: string): string {
-  // RRemove all semi sensitive data from the URL
-  if (url.includes("/scrape")) {
+  // Remove all semi sensitive data from the URL
+  if (url.includes("/analytics/") || url.includes("/speed/")) {
+    const basePath = url.includes("/analytics") ? "analytics" : "speed";
     url = url.replace(
-      /scrape\/[^\/]+\/[^\/]+\/[^\/]+/,
-      "scrape/[token]/[teamId]/[projectId]",
+      new RegExp(`${basePath}\/[^\/]+\/[^\/]+\/[^\/]+`),
+      `${basePath}/[token]/[teamId]/[projectId]`,
     );
     // remove any query params related to the token
-    const temp = new URL(url);
-    temp.searchParams.delete("token");
-    return temp.toString();
+    const tokenClean = new URL(url);
+    tokenClean.searchParams.delete("token");
+    return tokenClean.toString();
   }
   return url;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { MultiStepLoader } from "@/components/multi-step-loader";
-import { TokenForm } from "./form";
+import { TokenForm } from "@/components/token-form";
 import { useEffect, useState } from "react";
 import { Team, getVercelConfig } from "@/lib/vaas/vercel";
 import Link from "next/link";
@@ -62,7 +62,7 @@ export default function ScrapePage(): JSX.Element {
             Available Projects
           </h2>
           <p className="mt-4 font-normal text-base text-neutral-300 max-w-[600px] text-center mx-auto">
-            Select a project to pull your analytics data from. You can alwaus
+            Select a project to pull your analytics data from. You can always
             come back and select a different project.
           </p>
           <ul className="pt-8">
@@ -74,7 +74,9 @@ export default function ScrapePage(): JSX.Element {
                       key={project.id}
                       className="text-2xl text-center font-normal text-neutral-200"
                     >
-                      <Link href={`/scrape/${token}/${team.id}/${project.id}`}>
+                      <Link
+                        href={`/analytics/${token}/${team.id}/${project.id}`}
+                      >
                         {project.name}
                       </Link>
                     </li>

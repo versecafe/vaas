@@ -18,7 +18,7 @@ export default async function Home() {
           never been easier.
         </p>
         <div className="flex justify-center pt-8">
-          <Link href="/scrape">
+          <Link href="/analytics">
             <ShinyButton>Start now</ShinyButton>
           </Link>
         </div>

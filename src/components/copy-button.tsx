@@ -14,9 +14,11 @@ import { Event, trackEvent } from "@/lib/analytics";
 export function BlockCopyButton({
   code,
   event,
+  source,
   ...props
 }: {
   event: Event["name"];
+  source: "analytics" | "speed_insights";
   code: string;
 } & ButtonProps) {
   const [hasCopied, setHasCopied] = React.useState(false);
@@ -38,6 +40,9 @@ export function BlockCopyButton({
             navigator.clipboard.writeText(code);
             trackEvent({
               name: event,
+              properties: {
+                type: source,
+              },
             });
             setHasCopied(true);
           }}
