@@ -4,6 +4,7 @@ import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
 import "./global.css";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
             {children}
           </div>
           <TailwindIndicator />
+          <Toaster />
         </Providers>
       </body>
     </html>

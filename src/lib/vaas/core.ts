@@ -53,8 +53,21 @@ export async function vaas({
     },
   });
 
+  if (response.status === 500) {
+    return {
+      error:
+        "Unkown Vercel server error occurred. This can occur if you have an invalid Time Zone",
+    };
+  }
+
+  const jsonResponse = await response.json();
+  if (jsonResponse.error) {
+    return { error: jsonResponse.error.message };
+  }
+
+  // JSON response is shaped this way if successful, check for errors is done above
   const raw: { data: { key: string; total: number; devices: number }[] } =
-    await response.json();
+    jsonResponse;
 
   switch (format) {
     case "json":
@@ -90,7 +103,8 @@ export async function vaas({
       return { ok: { toml } };
   }
 
+  // This should never happen but Types are in build step only, this gives runtime safety and a message to the UI
   return {
-    error: "Invalid format. It must be 'json', 'csv', 'yaml', 'xml', or 'toml'",
+    error: `Invalid format. Must be JSON, CSV, YAML, XML, or TOML but received ${(format as String).toUpperCase()}.`,
   };
 }
