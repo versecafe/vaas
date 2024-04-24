@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
 import "./global.css";
 import { Toaster } from "@/components/ui/toaster";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,8 +24,8 @@ export default function RootLayout({
       <body className={cn(inter.className, "text-white")}>
         <Providers>
           <div className="min-h-screen w-full bg-black bg-grid-gray/[0.2] bg-grid-gray-600/[0.2] relative flex items-center justify-center">
-            <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />{" "}
-            {children}
+            <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+            <Suspense fallback={null}>{children}</Suspense>
           </div>
           <TailwindIndicator />
           <Toaster />
