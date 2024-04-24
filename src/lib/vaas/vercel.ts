@@ -7,20 +7,37 @@ export type Team = {
   projects: { name: string; id: string }[];
 };
 
-export async function getVercelConfig(token: string): Promise<Team[]> {
+export async function getVercelConfig(
+  token: string,
+): Promise<{ ok?: Team[]; error?: string }> {
+  console.log("Fetching teams...");
   const allTeams = await getTeams(token);
-  const teamsAndProjects = await Promise.all(
-    allTeams.map(async (team) => {
-      team.projects = await getProjects({ token, teamId: team.id });
-      return team;
+  if (allTeams.error) {
+    console.log(allTeams.error);
+    return { error: allTeams.error };
+  }
+
+  console.log("Teams fetched successfully!");
+
+  const teamsAndProjects: Team[] = await Promise.all(
+    allTeams.ok!.map(async (team) => {
+      const projects = await getProjects({ token, teamId: team.id });
+      return { ...team, projects: projects.ok! };
     }),
   );
+
   const teams = teamsAndProjects.filter((team) => team.projects.length > 0);
 
-  return teams;
+  if (teams.length === 0) {
+    return { error: "No projects with Web Analytics Data found" };
+  }
+
+  return { ok: teams };
 }
 
-async function getTeams(token: string): Promise<Team[]> {
+async function getTeams(
+  token: string,
+): Promise<{ ok?: Team[]; error?: string }> {
   // fetch data from Vercel
   const teamsResponse: Response = await fetch(
     "https://api.vercel.com/v2/teams",
@@ -33,17 +50,18 @@ async function getTeams(token: string): Promise<Team[]> {
   const teamsData: { teams: { id: string; name: string; slug: string }[] } =
     await teamsResponse.json();
 
-  if (teamsData.teams) {
-    let teams: Team[] = teamsData.teams.map((team) => ({
-      name: team.name,
-      id: team.id,
-      url: `https://vercel.com/${team.slug}`,
-      projects: [],
-    }));
-    return teams;
-  } else {
-    return [];
+  if (teamsData.teams == undefined) {
+    return { error: "Invalid token" };
   }
+
+  let teams: Team[] = teamsData.teams.map((team) => ({
+    name: team.name,
+    id: team.id,
+    url: `https://vercel.com/${team.slug}`,
+    projects: [],
+  }));
+
+  return { ok: teams };
 }
 
 /** Returns the id and name of all projects with Web Analytics Data*/
@@ -53,7 +71,7 @@ async function getProjects({
 }: {
   token: string;
   teamId: string;
-}): Promise<{ name: string; id: string }[]> {
+}): Promise<{ ok?: { name: string; id: string }[]; error?: string }> {
   const projectsData: Response = await fetch(
     `https://api.vercel.com/v9/projects?teamId=${teamId}`,
     {
@@ -78,8 +96,8 @@ async function getProjects({
           id: project.id,
         };
       });
-    return projects;
+    return { ok: projects };
   } else {
-    return [];
+    return { ok: [] };
   }
 }

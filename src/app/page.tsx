@@ -6,7 +6,7 @@ export default async function Home() {
   return (
     <>
       <Spotlight
-        className="top-[-20vh] left-[20vw] translate-x-[-50%] translate-y-[-50%]"
+        className="md:top-[-10vh] lg:top-[-10vh] xl:top-[-12vh] lg:left-[23vw] top-[-10vh] left-[5vw] hidden sm:block"
         fill="white"
       />
       <div className=" p-4 max-w-7xl flex-1 justify-center mx-auto relative z-10 w-full pt-20 sm:pt-0">

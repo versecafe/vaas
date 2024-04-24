@@ -5,6 +5,7 @@ import { TokenForm } from "./form";
 import { useEffect, useState } from "react";
 import { Team, getVercelConfig } from "@/lib/vaas/vercel";
 import Link from "next/link";
+import { useToast } from "@/components/ui/use-toast";
 
 const loadingStates = [
   {
@@ -22,6 +23,7 @@ const loadingStates = [
 ];
 
 export default function ScrapePage(): JSX.Element {
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [teams, setTeams] = useState<Team[]>([]);
@@ -31,16 +33,26 @@ export default function ScrapePage(): JSX.Element {
       setLoading(true);
       (async () => {
         try {
-          const config: Team[] = await getVercelConfig(token);
+          const { ok, error } = await getVercelConfig(token);
+          if (error) {
+            setLoading(false);
+            toast({
+              title: "Error",
+              description: error,
+              duration: 5000,
+            });
+          }
           await new Promise((resolve) => setTimeout(resolve, 1300));
-          setTeams(config);
+          if (ok) {
+            setTeams(ok);
+          }
           await new Promise((resolve) => setTimeout(resolve, 100));
         } finally {
           setLoading(false);
         }
       })();
     }
-  }, [token]);
+  }, [token, toast]);
 
   return (
     <>
