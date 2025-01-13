@@ -79,39 +79,59 @@ export async function vaas(request: VaasRequest): Promise<
         value: { data: JSON.stringify(raw.data, null, 2), type: "json" },
       };
     case "csv":
-      const csv: string =
-        "key,total,devices\n" +
-        raw.data.map((d) => `${d.key},${d.total},${d.devices}`).join("\n");
-      return { ok: true, value: { data: csv, type: "csv" } };
+      return {
+        ok: true,
+        value: {
+          data:
+            "key,total,devices\n" +
+            raw.data.map((d) => `${d.key},${d.total},${d.devices}`).join("\n"),
+          type: "csv",
+        },
+      };
     case "yaml":
-      const yaml: string = raw.data
-        .map(
-          (d) =>
-            `  - key: ${d.key}\n    total: ${d.total}\n    devices: ${d.devices}`,
-        )
-        .join("\n");
-      return { ok: true, value: { data: `dataset:\n${yaml}`, type: "yaml" } };
+      return {
+        ok: true,
+        value: {
+          data: `dataset:\n${raw.data
+            .map(
+              (d) =>
+                `  - key: ${d.key}\n    total: ${d.total}\n    devices: ${d.devices}`,
+            )
+            .join("\n")}`,
+          type: "yaml",
+        },
+      };
     case "xml":
-      const xml: string = `<?xml version="1.0" encoding="UTF-8"?>\n<dataset>${raw.data
-        .map(
-          (d) =>
-            `\n  <data>\n    <key>${d.key}</key>\n    <total>${d.total}</total>\n    <devices>${d.devices}</devices>\n  </data>`,
-        )
-        .join("")}\n</dataset>`;
-      return { ok: true, value: { data: xml, type: "xml" } };
+      return {
+        ok: true,
+        value: {
+          data: `<?xml version="1.0" encoding="UTF-8"?>\n<dataset>${raw.data
+            .map(
+              (d) =>
+                `\n  <data>\n    <key>${d.key}</key>\n    <total>${d.total}</total>\n    <devices>${d.devices}</devices>\n  </data>`,
+            )
+            .join("")}\n</dataset>`,
+          type: "xml",
+        },
+      };
     case "toml":
-      const toml: string = `[[data]]\n${raw.data
-        .map(
-          (d) =>
-            `  key = "${d.key}"\n  total = ${d.total}\n  devices = ${d.devices}`,
-        )
-        .join("\n\n[[data]]\n")}`;
-      return { ok: true, value: { data: toml, type: "toml" } };
+      return {
+        ok: true,
+        value: {
+          data: `[[data]]\n${raw.data
+            .map(
+              (d) =>
+                `  key = "${d.key}"\n  total = ${d.total}\n  devices = ${d.devices}`,
+            )
+            .join("\n\n[[data]]\n")}`,
+          type: "toml",
+        },
+      };
   }
 
   // This should never happen but Types are in build step only, this gives runtime safety and a message to the UI
   return {
     ok: false,
-    error: `Invalid format. Must be JSON, CSV, YAML, XML, or TOML but received ${(request.format as String).toUpperCase()}.`,
+    error: `Invalid format. Must be JSON, CSV, YAML, XML, or TOML but received ${(request.format as string).toUpperCase()}.`,
   };
 }
