@@ -28,25 +28,25 @@
     "date-fns": "^3.6.0",
     "framer-motion": "^11.18.2",
     "mini-svg-data-uri": "^1.4.4",
-    "next": "^15.3.0-canary.21",
-    "react": "^19.0.0",
+    "next": "^15.3.0-canary.42",
+    "react": "^19.1.0",
     "react-day-picker": "^8.10.1",
-    "react-dom": "^19.0.0",
-    "react-hook-form": "^7.54.2",
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.55.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/node": "^20.17.27",
+    "@types/node": "^20.17.30",
     "@types/react": "^18.3.20",
-    "@types/react-dom": "^18.3.5",
-    "babel-plugin-react-compiler": "^19.0.0-beta-e552027-20250112",
+    "@types/react-dom": "^18.3.6",
+    "babel-plugin-react-compiler": "^19.0.0-beta-e993439-20250405",
     "eslint": "^8.57.1",
-    "eslint-config-next": "^15.3.0-canary.21",
+    "eslint-config-next": "^15.3.0-canary.42",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "trustedDependencies": ["@vercel/speed-insights", "sharp"]
 }
